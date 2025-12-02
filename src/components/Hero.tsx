@@ -1,23 +1,9 @@
 export default function Hero() {
   return (
-    <section id="hero" className="relative w-full h-[90vh] md:h-screen flex items-center justify-center overflow-hidden bg-slate-50">
+    <section id="hero" className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
       
-      {/* Left Floral Border */}
-      <img 
-        src="/images/floral-left.png" 
-        alt="Decorative leaves" 
-        className="absolute left-0 top-0 h-full w-auto object-cover opacity-90 z-10 hidden md:block pointer-events-none"
-      />
-
-      {/* Right Floral Border */}
-      <img 
-        src="/images/floral-right.png" 
-        alt="Decorative leaves" 
-        className="absolute right-0 top-0 h-full w-auto object-cover opacity-90 z-10 hidden md:block pointer-events-none"
-      />
-
-      {/* Main Content */}
-      <div className="relative z-20 text-center space-y-6 px-4 animate-in fade-in zoom-in duration-1000">
+      {/* Content */}
+      <div className="relative z-10 text-center space-y-6 px-4 animate-in fade-in zoom-in duration-1000 mt-20">
         <p className="text-slate-500 uppercase tracking-[0.2em] text-sm md:text-base">
           Together with their families
         </p>
@@ -37,9 +23,7 @@ export default function Hero() {
           </p>
         </div>
       </div>
-
-      {/* Optional: Background Fade for the very bottom */}
-      <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-white to-transparent z-10"></div>
+      <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none"></div>
     </section>
   );
 }

@@ -3,7 +3,6 @@ import path from 'path';
 import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 
-// Setup paths for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -11,77 +10,88 @@ const SOURCE_DIR = path.join(__dirname, '../../photos_source');
 const OUTPUT_DIR = path.join(__dirname, '../../public/gallery');
 const DATA_FILE = path.join(__dirname, '../data/photos.ts');
 
-// Ensure output directory exists
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+// Helper to clean and recreate output dir
+if (fs.existsSync(OUTPUT_DIR)) {
+  fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
 }
-
-// Ensure data directory exists
-const dataDir = path.dirname(DATA_FILE);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
 const processPhotos = async () => {
   console.log(`📸 Scanning ${SOURCE_DIR}...`);
   
   if (!fs.existsSync(SOURCE_DIR)) {
-    console.error(`Error: Source folder not found at ${SOURCE_DIR}`);
-    console.log("Please create a folder named 'photos_source' in your project root and add your photos.");
+    console.error(`❌ Error: Source folder not found.`);
     return;
   }
 
-  const files = fs.readdirSync(SOURCE_DIR).filter(file => 
-    /\.(jpg|jpeg|png|webp)$/i.test(file)
-  );
-
-  console.log(`found ${files.length} photos. Processing...`);
-
+  // 1. Get all category folders (directories inside photos_source)
+  // If a file is in the root, we label it "Uncategorized" or "Highlights"
+  const entries = fs.readdirSync(SOURCE_DIR, { withFileTypes: true });
   const photoData = [];
 
-  for (const file of files) {
-    const inputPath = path.join(SOURCE_DIR, file);
-    const outputFilename = file.replace(/\.[^/.]+$/, "") + ".webp";
-    const outputPath = path.join(OUTPUT_DIR, outputFilename);
+  for (const entry of entries) {
+    const fullPath = path.join(SOURCE_DIR, entry.name);
 
-    try {
-      // 1. Get Metadata (Width/Height)
-      const metadata = await sharp(inputPath).metadata();
+    if (entry.isDirectory()) {
+      // It's a Category Folder (e.g., "Ceremony")
+      const category = entry.name;
+      const files = fs.readdirSync(fullPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
       
-      // 2. Resize & Convert to WebP
-      // We limit width to 1920px (Full HD) to save space, keeping aspect ratio
-      await sharp(inputPath)
-        .resize({ width: 1920, withoutEnlargement: true }) 
-        .webp({ quality: 80 }) // 80% quality is the sweet spot for weddings
-        .toFile(outputPath);
+      console.log(`📂 Processing Category: ${category} (${files.length} photos)`);
 
-      // 3. Add to our data list
-      photoData.push({
-        src: `/gallery/${outputFilename}`,
-        width: metadata.width, // We store original aspect ratio dimensions
-        height: metadata.height,
-        alt: "Wedding photo"
-      });
+      for (const file of files) {
+        await convertImage(path.join(fullPath, file), file, category, photoData);
+      }
 
-      console.log(`Processed: ${file}`);
-    } catch (error) {
-      console.error(`Failed to process ${file}:`, error);
+    } else if (/\.(jpg|jpeg|png|webp)$/i.test(entry.name)) {
+      // It's a file in the root (Assign to "Highlights" or similar)
+      await convertImage(fullPath, entry.name, "Highlights", photoData);
     }
   }
 
-  // 4. Write the TypeScript data file
+  // 4. Write Data File
   const fileContent = `export interface Photo {
   src: string;
   width: number;
   height: number;
-  alt: string;
+  category: string;
 }
 
 export const photos: Photo[] = ${JSON.stringify(photoData, null, 2)};
 `;
 
   fs.writeFileSync(DATA_FILE, fileContent);
-  console.log(`\n🎉 Done! Generated data for ${photoData.length} photos at ${DATA_FILE}`);
+  console.log(`\n🎉 Done! Generated data for ${photoData.length} photos.`);
 };
+
+// Helper function to process a single image
+async function convertImage(inputPath, filename, category, dataArray) {
+  // Output as JPG now (better for downloads)
+  const outputFilename = `${category}_${filename.replace(/\.[^/.]+$/, "")}.jpg`
+    .replace(/\s+/g, '_'); // Replace spaces with underscores for web safety
+    
+  const outputPath = path.join(OUTPUT_DIR, outputFilename);
+
+  try {
+    const metadata = await sharp(inputPath).metadata();
+    
+    await sharp(inputPath)
+      .resize({ width: 1920, withoutEnlargement: true })
+      .jpeg({ quality: 85, mozjpeg: true }) // Optimize JPEG
+      .toFile(outputPath);
+
+    dataArray.push({
+      src: `/gallery/${outputFilename}`,
+      width: metadata.width,
+      height: metadata.height,
+      category: category
+    });
+    
+    // Optional: Print a dot to show progress without spamming
+    process.stdout.write('.');
+  } catch (error) {
+    console.error(`\n❌ Failed: ${filename}`, error);
+  }
+}
 
 processPhotos();

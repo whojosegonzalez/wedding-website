@@ -1,28 +1,21 @@
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // Adds a subtle shadow when the user scrolls down
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  // We can keep the scroll logic if you want the shadow to appear/disappear, 
+  // OR just force the background always. Let's force it for stability.
+  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Offset by 80px so the navbar doesn't cover the section title
+      const y = element.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/90 shadow-md backdrop-blur-sm py-2" : "bg-transparent py-4"
-      }`}
-    >
+    // CHANGED: Removed transparent logic. It is now always white with a shadow.
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-100 py-4 transition-all duration-300">
       <div className="max-w-6xl mx-auto px-6 flex justify-center md:justify-between items-center text-slate-800">
         <div className="hidden md:block text-xl font-serif tracking-widest uppercase">
           M & J
@@ -35,7 +28,6 @@ export default function Navbar() {
           <button onClick={() => scrollToSection("gallery")} className="hover:text-emerald-600 transition">
             Gallery
           </button>
-          {/* We can add 'Wedding Party' or 'Registry' here later if you keep them */}
         </div>
       </div>
     </nav>

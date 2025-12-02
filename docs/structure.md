@@ -7,44 +7,44 @@ A map of the project files and directories.
 ## Root
 | Path | Purpose |
 |------|----------|
-| `/index.html` | Entry point (Vite) |
+| `/index.html` | Entry point (Updated with SEO metadata) |
 | `/vite.config.ts` | Configuration for Vite + React + Tailwind |
-| `/package.json` | Dependencies (React, Framer Motion, Photo Album) |
-| `/tailwind.config.js` | (If using v3) or standard CSS config |
-| `/photos_source/` | **Local Only**: High-res original photos (Not committed to Git) |
+| `/package.json` | Dependencies (React, Framer Motion, Photo Album, Sharp) |
+| `/photos_source/` | **Local Only**: High-res original photos (Ignored by Git) |
 
 ---
 
 ## src/
 | Path | Purpose |
 |------|----------|
-| `/src/main.tsx` | App entry point, renders App into root div |
-| `/src/App.tsx` | Main layout shell (Navbar + Hero + Gallery Placeholder) |
-| `/src/index.css` | Global styles (Tailwind imports + Custom font rules) |
+| `/src/main.tsx` | App entry point |
+| `/src/App.tsx` | Main layout shell (Global floral borders + Content Container) |
+| `/src/index.css` | Global styles (Wallpaper pattern + Tailwind imports) |
 
 ### src/components/
 | Path | Purpose |
 |------|---------|
-| `/src/components/Navbar.tsx` | Sticky navigation with smooth scroll links |
-| `/src/components/Hero.tsx` | "Melinda & Jose" main visual with floral borders |
-| `/src/components/Gallery.tsx` | **(Todo)** Main photo grid (Masonry layout) |
-| `/src/components/Lightbox.tsx` | **(Todo)** Full-screen image viewer (Swipe/Zoom) |
-| `/src/components/RSVP.tsx` | **(Optional)** Simple Netlify form for guestbook/messages |
+| `/src/components/Navbar.tsx` | Sticky navigation with shadow effect |
+| `/src/components/Hero.tsx` | Main visual with floral borders and fade effect |
+| `/src/components/Gallery.tsx` | Masonry grid + Lightbox logic + Category Filter Ribbon |
+| `/src/components/Footer.tsx` | "Forever & Always" branding and credits |
 
 ### src/data/
 | Path | Purpose |
 |------|---------|
-| `/src/data/photos.ts` | **(Auto-Generated)** JSON list of all photo filenames, sizes, and categories |
+| `/src/data/photos.ts` | **(Auto-Generated)** Typed array of all photo metadata |
 
 ### src/scripts/
 | Path | Purpose |
 |------|---------|
-| `/src/scripts/process-photos.js` | **(Todo)** Node script to resize/convert images from source to public |
+| `/src/scripts/process-photos.js` | Node script to scan subfolders, resize to JPG, and generate data |
 
 ---
 
 ## public/
 | Path | Purpose |
 |------|----------|
-| `/public/images/` | Static assets (Floral borders, icons, hero bg) |
-| `/public/gallery/` | **(Generated)** Optimized WebP images served to the website |
+| `/public/404.html` | Custom "Page Not Found" for Netlify |
+| `/public/images/` | Static assets (Floral borders, pattern.png) |
+| `/public/gallery/` | **(Generated)** Optimized JPEG images served to the website |
+| `/public/favicon*` | **(New)** Full set of generated favicons (ICO, PNG, Manifest) |
