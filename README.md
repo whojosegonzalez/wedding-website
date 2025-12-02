@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# Melinda & Jose - Wedding Archive
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A custom digital photo album and memory archive for our wedding (July 29, 2023). Built to preserve our memories in high resolution without relying on paid website builders.
 
-Currently, two official plugins are available:
+**Live Site:** [https://joseandmelinda.com](https://joseandmelinda.com)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS v4
+- **Gallery:** `react-photo-album` (Masonry Layout)
+- **Lightbox:** `yet-another-react-lightbox` (Zoom/Swipe support)
+- **Image Processing:** Node.js + Sharp
 
-## React Compiler
+## Key Features
+- **Smart Gallery:** A responsive masonry grid that organizes portrait and landscape photos without gaps.
+- **Category Filtering:** Instantly filter moments (Ceremony, Reception, etc.) using a custom metadata pipeline.
+- **Optimized Performance:** Uses a custom script to convert high-res source files into web-optimized JPEGs.
+- **Mobile Experience:** Full swipe support, pinch-to-zoom, and "App-like" sticky navigation.
+- **Preservation:** Download buttons allow family members to save high-quality versions of photos.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Photo Workflow (How to Add Photos)
 
-## Expanding the ESLint configuration
+This project uses a custom "Source to Public" pipeline to keep the repository light and the website fast.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1.  **Source:** Place high-res photos into the `photos_source/` folder in the project root.
+    * *Organization:* Create subfolders inside `photos_source` to create categories (e.g., `photos_source/Ceremony/`).
+2.  **Process:** Run the optimization script:
+    ```bash
+    node src/scripts/process-photos.js
+    ```
+3.  **Result:** The script automatically:
+    * Resizes images to 1920px (Full HD).
+    * Converts them to optimized JPEGs.
+    * Generates `src/data/photos.ts` with dimensions and category tags.
+    * Saves the ready-to-use files in `public/gallery/`.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Local Development
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2.  **Process Images** (Required first run)
+    ```bash
+    node src/scripts/process-photos.js
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3.  **Start the Dev Server**
+    ```bash
+    npm run dev
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deployment
+This site is deployed on **Netlify**.
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+- **Privacy:** Source code is held in a private GitHub repository.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+*Built with ♥ by Jose Gonzalez*

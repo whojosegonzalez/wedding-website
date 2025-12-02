@@ -8,7 +8,8 @@ Current Status: **Building Features (Localhost)**
 - [x] Generate WebP assets in `public/gallery/`.
 
 ## Feature 2: The Gallery Data Structure
-- [x] Auto-generate `src/data/photos.ts` via script.
+- [x] Auto-generate `src/data/photos.ts` via script. 
+```node src/scripts/process-photos.js```
 - [ ] **Update:** Add "Category" support to the script (See Feature 5).
 
 ## Feature 3: The Masonry Grid Layout
