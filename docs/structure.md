@@ -47,3 +47,4 @@ A map of the project files and directories.
 | `/public/404.html` | Custom "Page Not Found" for Netlify |
 | `/public/images/` | Static assets (Floral borders, pattern.png) |
 | `/public/gallery/` | **(Generated)** Optimized JPEG images served to the website |
+| `/public/favicon*` | **(New)** Full set of generated favicons (ICO, PNG, Manifest) |
